@@ -1,12 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, PermissionsAndroid, Alert, View } from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  PermissionsAndroid,
+  Alert,
+  View,
+} from 'react-native';
 import GetLocation from 'react-native-get-location';
 import SplashScreen from './src/View/SplashScreen';
-//import MainScreen from './src/View/MainScreen';
-import { url, key } from './src/api/Endpoint';
-import axios from 'axios';
+import MainScreen from './src/View/MainScreen';
+import { connect, Provider, RootStateOrAny } from 'react-redux';
+import store from './src/reducer/rootReducer';
 
-const App = () => {
+const App = (props: any) => {
   const [show, setShow] = useState<boolean>(true);
   const [permission, setPermission] = useState<boolean>(false);
   useEffect(() => {
@@ -26,12 +33,12 @@ const App = () => {
   const requestPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         setPermission(true);
       } else {
-        Alert.alert("WeatherApp requires Location Permission");
+        Alert.alert('WeatherApp requires Location Permission');
       }
     } catch (error) {
       console.error(error);
@@ -45,26 +52,16 @@ const App = () => {
         timeout: 15000,
       })
         .then(location => {
-          getWeather(location.latitude, location.longitude);
+          props.dispatch({
+            type: 'SET_DATA',
+            latitude: location.latitude,
+            longitude: location.longitude,
+          });
         })
         .catch(error => {
           const { code, message } = error;
           console.warn(code, message);
-        })
-    }
-  };
-
-  const getWeather = async (latitude: number, longitude: number) => {
-    if (permission) {
-      axios.get(`${url}onecall?lat=${latitude}&lon=${longitude}&exclude=minutely,hourly,alerts&appid=${key}`, {
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => console.error(error));
+        });
     }
   };
 
@@ -74,13 +71,27 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/*show ? <SplashScreen /> : <MainScreen />*/}
-      <SplashScreen />
+      {show ? <SplashScreen /> : <MainScreen />}
     </SafeAreaView>
   );
 };
 
-export default App;
+const mapStateToProps = (state: RootStateOrAny) => ({
+  latitude: state.weather.latitude,
+  longitude: state.weather.longitude,
+});
+
+const ConnectApp = connect(mapStateToProps)(App);
+
+const RootComponent = () => {
+  return (
+    <Provider store={store}>
+      <ConnectApp />
+    </Provider>
+  );
+};
+
+export default RootComponent;
 
 const styles = StyleSheet.create({
   container: {
