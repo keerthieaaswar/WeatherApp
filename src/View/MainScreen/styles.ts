@@ -6,10 +6,11 @@ export default StyleSheet.create({
     flex: 1,
   },
   topContainer: {
-    height: '50%',
+    flex: 1,
   },
   bottomContainer: {
     padding: scale(10),
+    flex: 1,
   },
   titleContainer: {
     alignItems: 'center',
@@ -25,22 +26,26 @@ export default StyleSheet.create({
   weatherContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: scale(50),
   },
   weatherText: {
     fontSize: scale(50),
     fontWeight: 'bold',
     color: 'white',
-    padding: scale(10),
   },
   weatherDate: {
-    fontSize: scale(20),
+    fontSize: scale(15),
     fontWeight: 'bold',
     color: 'white',
+    textTransform: 'capitalize',
   },
   weeklyText: {
     color: 'grey',
     fontSize: scale(15),
     fontWeight: 'bold',
+  },
+  largeIcon: {
+    width: scale(100),
+    height: scale(100),
+    resizeMode: 'contain',
   },
 });

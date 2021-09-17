@@ -5,11 +5,7 @@ const initialState = {
 
 export default function weatherReducer(
   state = initialState,
-  action: {
-    type: any;
-    latitude: number;
-    longitude: number;
-  },
+  action: { type: any; latitude: string; longitude: string },
 ) {
   switch (action.type) {
     case 'SET_DATA':

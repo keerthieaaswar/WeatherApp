@@ -12,6 +12,7 @@ import SplashScreen from './src/View/SplashScreen';
 import MainScreen from './src/View/MainScreen';
 import { connect, Provider, RootStateOrAny } from 'react-redux';
 import store from './src/reducer/rootReducer';
+import { readForecast } from './src/reducer/Forecast';
 
 const App = (props: any) => {
   const [show, setShow] = useState<boolean>(true);
@@ -57,6 +58,11 @@ const App = (props: any) => {
             latitude: location.latitude,
             longitude: location.longitude,
           });
+          const dataToSend = {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          };
+          props.dispatch(readForecast(dataToSend));
         })
         .catch(error => {
           const { code, message } = error;
