@@ -25,7 +25,6 @@ const MainScreen = () => {
   const imageOpacityStyle = {
     opacity: imageOpacity,
   };
-  // interpolate the vertical position of the title
   const titleMoveY = titleTranslateYValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 280],
