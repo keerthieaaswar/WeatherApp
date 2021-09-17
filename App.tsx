@@ -6,15 +6,9 @@ import SplashScreen from './src/View/SplashScreen';
 import { url, key } from './src/api/Endpoint';
 import axios from 'axios';
 
-interface IState {
-  latitude: number;
-  longitude: number;
-}
-
 const App = () => {
   const [show, setShow] = useState<boolean>(true);
   const [permission, setPermission] = useState<boolean>(false);
-  const [state, setState] = useState<IState>({ latitude: 0, longitude: 0 });
   useEffect(() => {
     requestPermission();
   }, []);
@@ -51,20 +45,28 @@ const App = () => {
         timeout: 15000,
       })
         .then(location => {
-          setState({ latitude: location.latitude, longitude: location.longitude });
+          getWeather(location.latitude, location.longitude);
         })
         .catch(error => {
           const { code, message } = error;
           console.warn(code, message);
         })
     }
-  }
+  };
 
-  const getWeather = async () => {
-    if(permission){
-      axios.get(`${url}onecall?lat=${state.latitude}&lon=`)
+  const getWeather = async (latitude: number, longitude: number) => {
+    if (permission) {
+      axios.get(`${url}onecall?lat=${latitude}&lon=${longitude}&exclude=minutely,hourly,alerts&appid=${key}`, {
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => console.error(error));
     }
-  }
+  };
 
   if (!permission) {
     return <View style={styles.container} />;
